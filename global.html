@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		</style>
+		<script>
+
+			safari.application.addEventListener('beforeNavigate', beforeNavigateHandler, true);
+			safari.application.addEventListener('navigate', navigateHandler, true);
+			safari.application.addEventListener('message', messageHandler, false);
+
+			function navigateHandler () {
+
+				console.log(safari.application.activeBrowserWindow.activeTab.url);
+			}
+
+			function beforeNavigateHandler (event) {
+
+				console.log('a', event.url);
+
+				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getGlobalFeeds', event.url);
+
+				//preventDefault();
+
+				console.log('b');
+			}
+
+			function messageHandler(event) {
+
+				console.log('c');
+
+				if (event.name == 'putGlobalFeeds') {
+					console.log('d');
+					checkUrl(event.message);
+				}
+			}
+
+			function checkUrl (data) {
+
+				console.log('e', data);
+
+				var url = data[0];
+				var feeds = data[1];
+
+				//var url = safari.application.activeBrowserWindow.activeTab.url;
+
+				console.log('e2 ', url);
+
+				for (var i in feeds) {
+					console.log('f');
+					if (feeds[i].href == url) {
+						console.log('yes!!!');
+						safari.application.activeBrowserWindow.activeTab.url = 'http://www.feedly.com/home#subscription/feed/' + feeds[i].href;
+					}
+				}
+			}
+
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+
+			a {
+				font-family: Helvetica;
+				font-size: 13px;
+				color: #BDBDBD;
+				outline: none;
+				text-decoration: none;
+			}
+
+			#popover {
+				background-color: #282828;
+				border-radius: 5px;
+				padding-top: 5px;
+			}
+
+			.item {
+				width: 32px;
+				height: 32px;
+				padding: 0 5px 5px 5px;
+			}
+
+		</style>
+		<script>
+			safari.application.addEventListener('message', messageHandler, false);
+			safari.application.addEventListener('popover', popoverHandler, true);
+			safari.application.addEventListener('validate', validateHandler, true);
+			safari.application.addEventListener('beforeNavigate', beforeNavigateHandler, true);
+
+			function openLinkInNewTab(url) {
+				safari.application.activeBrowserWindow.openTab().url = url;
+				safari.extension.popovers[0].hide();
+				console.log(safari.extension.popovers[0]);
+			}
+
+			function messageHandler(event) {
+
+				if (event.name == 'putFeeds') {
+
+					var feeds = event.message, html = '';
+
+					/*safari.extension.popovers[0].width = 42;
+					safari.extension.popovers[0].height = 120;
+
+					html += '<ul>';
+					for (i in feeds) {
+						html += '<li title="' + feeds[i]['title'] + '"><a href="#" id="' + i + 'href" >' + feeds[i]['type'] + '</a></p>';
+					}
+					html += '<ul>';
+
+					var popup = document.getElementById('feeds');
+					popup.innerHTML = '';
+					popup.innerHTML = html;
+
+					// Creating onclick events
+					for (i in feeds) {
+						var createLink = document.getElementById(i + 'href');
+						createLink.setAttribute('onclick', 'openLinkInNewTab(\'' + feeds[i]["href"] + '\');');
+					}*/
+
+					var feed = document.getElementById('feed');
+					feed.setAttribute('onclick', 'openLinkInNewTab(\'' + feeds[0]["href"] + '\');');
+				}
+			}
+
+			function popoverHandler(event) {
+
+				if (event.target.identifier === 'feedlyzr2') {
+
+					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getFeeds', false);
+				}
+			}
+
+			function validateHandler(event) {
+
+				// event.command = popover identifier in extension builder
+				if (event.command == 'feedlyzr2') {
+				}
+			}
+
+		</script>
+	</head>
+	<body>
+		<div id="popover">
+		        <div class="item">
+		            <a href="#" title="Preview this source in feedly"> 
+		                <img src="images/mini-feedly.png">
+		            </a> 
+		        </div>
+		        <div class="item">
+		            <img id="saveAction" src="images/mini-save.png" title="Save for later">
+		        </div>
+		    </div>
+		</div>
+	</body>
+</html>
